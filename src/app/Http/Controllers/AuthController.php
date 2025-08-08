@@ -12,9 +12,6 @@ use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
 {
-    public function index(){
-        return view('attendance');
-    }
 
     public function register(){
         return view('auth.register');
@@ -27,7 +24,9 @@ class AuthController extends Controller
             'password' => Hash::make($request['password']),
         ]);
         Auth::login($user);
-        return redirect('/');
+        $user->sendEmailVerificationNotification();
+        session()->put('unauthenticated_user', $user);
+        return redirect()->route('verification.notice');
     }
 
     public function showLogin(){
