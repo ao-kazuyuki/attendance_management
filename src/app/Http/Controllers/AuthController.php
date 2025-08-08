@@ -40,7 +40,7 @@ class AuthController extends Controller
         ];
         if(Auth::attempt($user, $request->filled('remember'))) {
             $request->session()->regenerate();
-            return redirect()->intended('/');
+            return redirect()->intended('/attendance');
         }
         throw ValidationException::withMessages([
             'email' => __('ログイン情報が登録されていません'),
