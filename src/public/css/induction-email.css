@@ -1,0 +1,55 @@
+.flash-layout {
+    min-height: 50px;
+}
+
+#flashLayout {
+    opacity: 1;
+    visibility: visible;
+    transition: opacity 1s ease-in-out 3s, visibility 0s linear 4s;
+}
+
+#flashLayout.hide {
+    opacity: 0;
+    visibility: hidden;
+}
+
+.flash-msg {
+    font-size: 20px;
+    font-weight: bold;
+    color: #000000;
+    padding: 10px 20px;
+}
+
+.guidance-layout {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.guidance-content {
+    text-align: center;
+    font-size: 24px;
+    font-weight: bold;
+    margin: 240px 0 60px 0;
+}
+
+.form-button {
+    width: 260px;
+    height: 70px;
+    font-size: 24px;
+    font-weight: bold;
+    border-radius: 10px;
+    border: 1px solid #000000;
+    background-color: #d9d9d9;
+    margin-bottom: 75px;
+}
+
+.resend-link {
+    border: none;
+    background-color: #ffffff;
+    text-decoration: none;
+    font-size: 20px;
+    color: #0073cc;
+    margin-bottom: 100px;
+    cursor: pointer;
+}
