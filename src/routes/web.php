@@ -19,7 +19,8 @@ Route::controller(AuthController::class)->group(function(){
 
 Route::controller(AttendanceController::class)->group(function(){
     Route::middleware(['auth', 'verified'])->group(function(){
-        Route::get('/', 'index');
+        Route::get('/attendance', 'index');
+        Route::get('/api/current-time', 'currentTime');     //非同期で現在時刻を取得
     });
 });
 
@@ -38,5 +39,5 @@ Route::post('/email/verification-notification', function(Request $requet){
 Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
     $request->fulfill();
     session()->forget('unauthenticated_user');
-    return redirect('/');
+    return redirect('/attendance');
 })->name('verification.verify');

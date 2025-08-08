@@ -1,0 +1,44 @@
+.attendance-layout {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.attendance-state {
+    font-size: 18px;
+    font-weight: bold;
+    color: #696969;
+    background-color: #c8c8c8;
+    width: 100px;
+    height: 40px;
+    line-height: 40px;
+    border-radius: 50px;
+    text-align: center;
+    margin: 200px 0 32px 0;
+}
+
+.attendance-day {
+    font-size: 40px;
+    margin: 0 0 32px 0;
+}
+
+.attendance-time {
+    font-size: 80px;
+    line-height: 80px;
+    font-weight: bold;
+}
+
+.attendance-btn {
+    font-size: 32px;
+    color: #ffffff;
+    background-color: #000000;
+    border: none;
+    font-weight: bold;
+    width: 220px;
+    height: 80px;
+    line-height: 80px;
+    border-radius: 20px;
+    text-align: center;
+    cursor: pointer;
+    margin: 100px 0;
+}
