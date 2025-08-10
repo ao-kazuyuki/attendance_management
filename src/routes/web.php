@@ -5,6 +5,17 @@ use App\Http\Controllers\AuthController;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Support\Facades\Route;
 
+Route::controller(AttendanceController::class)->group(function(){
+    Route::middleware(['auth', 'verified'])->group(function(){
+        Route::get('/attendance', 'index');
+        Route::post('/attendance/start', 'start')->name('start');               //出勤処理
+        Route::post('/attendance/finish', 'finish')->name('finish');            //退勤処理
+        Route::post('/attendance/break-in', 'breakIn')->name('break-in');       //休憩(入)処理
+        Route::post('/attendance/break-out', 'breakOut')->name('break-out');    //休憩(戻)処理
+        Route::get('/api/current-time', 'currentTime');                         //非同期に時間を取得
+    });
+});
+
 Route::controller(AuthController::class)->group(function(){
     Route::middleware('guest')->group(function(){
         Route::get('/register', 'register')->name('register');
@@ -17,14 +28,7 @@ Route::controller(AuthController::class)->group(function(){
     });
 });
 
-Route::controller(AttendanceController::class)->group(function(){
-    Route::middleware(['auth', 'verified'])->group(function(){
-        Route::get('/attendance', 'index');
-        Route::get('/api/current-time', 'currentTime');     //非同期で現在時刻を取得
-    });
-});
-
-//認証誘導画面
+//メール認証誘導画面
 Route::get('/email/verify', function(){
     return view('auth.induction-email');
 })->name('verification.notice');
@@ -35,7 +39,7 @@ Route::post('/email/verification-notification', function(Request $requet){
     return back()->with('message', '認証メールを再送信しました！');
 })->name('verification.send');
 
-//認証処理とリダイレクト
+//認証処理
 Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
     $request->fulfill();
     session()->forget('unauthenticated_user');

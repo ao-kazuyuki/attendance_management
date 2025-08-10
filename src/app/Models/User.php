@@ -21,6 +21,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'name',
         'email',
         'password',
+        'status_id',
     ];
 
     /**
@@ -41,4 +42,17 @@ class User extends Authenticatable implements MustVerifyEmail
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function getStatus(){
+        return optional($this->status)->content;
+    }
+
+    public function status(){
+        return $this->belongsTo(Status::class);
+    }
+
+    public static function updateStatusByUserId($userId, $statusId){
+        return self::where('id', $userId)->update(['status_id' => $statusId]);
+    }
+
 }

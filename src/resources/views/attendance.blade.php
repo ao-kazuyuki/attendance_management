@@ -10,16 +10,54 @@
 @endsection
 
 @section('content')
-<form class="attendance-layout">
-    @csrf
-    <div class="attendance-state">勤務外</div>
+
+<div class="flash-layout" id="flashLayout">
+@if(session('message'))
+    <div class="flash-msg" id="flashMsg">{{ session('message') }}</div>
+@endif
+</div>
+
+<div class="attendance-layout">
+    <div class="attendance-state">{{ $user->getStatus() }}</div>
     <div class="attendance-day" id="date">{{ $outputDate }}</div>
     <div class="attendance-time" id="time">{{ $outputTime }}</div>
-    <button class="attendance-btn" type="submit">出勤</button>
-</form>
+    @if($user->getStatus()=='勤務外')
+        <form action="{{ route('start') }}" method="post">
+            @csrf
+            <button class="attendance-btn" type="submit">出勤</button>
+        </form>
+    @elseif($user->getStatus()=='出勤中')
+        <div style="display:flex">
+            <form action="{{ route('finish') }}" method="post" >
+                @csrf
+                <button class="attendance-btn" type="submit">退勤</button>
+            </form>
+            <form action="{{ route('break-in') }}" method="post">
+                @csrf
+                <button class="attendance-btn white" type="submit">休憩入</button>
+            </form>
+        </div>
+    @elseif($user->getStatus()=='休憩中')
+        <form action="{{ route('break-out') }}" method="post">
+            @csrf
+            <button class="attendance-btn white" type="submit">休憩戻</button>
+        </form>
+    @elseif($user->getStatus()=='退勤済')
+        <span class="attendance-comment">お疲れさまでした。</span>
+    @endif
+</div>
 
 <!-- 現在時刻を非同期に取得 -->
 <script>
+
+    if(document.getElementById('flashMsg')){
+        window.addEventListener('load', () => {
+            const flashElm = document.getElementById('flashLayout');
+            flashElm.style.backgroundColor = "#00cc00";
+            flashElm.classList.add('hide');
+        });
+    }
+
     const dateElm = document.getElementById('date');
     const timeElm = document.getElementById('time');
     const updateTime = async function(){
