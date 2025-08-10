@@ -1,3 +1,30 @@
+main {
+    height: calc(100vh - 80px);
+    background-color: #f0eff2;
+}
+
+.flash-layout {
+    min-height: 50px;
+}
+
+#flashLayout {
+    opacity: 1;
+    visibility: visible;
+    transition: opacity 1s ease-in-out 3s, visibility 0s linear 4s;
+}
+
+#flashLayout.hide {
+    opacity: 0;
+    visibility: hidden;
+}
+
+.flash-msg {
+    font-size: 20px;
+    font-weight: bold;
+    color: #000000;
+    padding: 10px 20px;
+}
+
 .attendance-layout {
     display: flex;
     flex-direction: column;
@@ -40,5 +67,16 @@
     border-radius: 20px;
     text-align: center;
     cursor: pointer;
+    margin: 100px 40px;
+}
+
+.white {
+    background-color: #ffffff;
+    color: #000000;
+}
+
+.attendance-comment {
+    font-size: 26px;
+    font-weight: bold;
     margin: 100px 0;
 }
