@@ -79,7 +79,50 @@ class AttendanceController extends Controller
     }
 
     /**
-     *  勤怠一覧画面を出力します。
+     *  指定した年月で勤怠一覧画面を出力します。
+     */
+    public function selectAttendanceList($year, $month){
+        $user = Auth::user();
+        //指定した年月を出力月に指定
+        $date = new DateTime($year . '-' . $month . '-1');
+        $year = $date->format('Y');
+        $month = $date->format('m');
+        //出力月の初日から月末までの勤務記録を取得
+        $startDate = (clone $date)->modify('first day of this month');
+        $finishDate = (clone $date)->modify('last day of this month');
+        $works = $user->getWorksBetween($startDate, $finishDate);
+        $resultAttendanceTime = [];
+        //各出勤日に対応する休憩レコードがあれば同一の勤務の休憩を合算して取得
+        $rests = [];
+        foreach($works as $work){
+            $attendanceTime = $work->getAttendanceTime();
+            $sumRestSeconds = 0;
+            foreach($work->rests as $rest){
+                $restIn = $rest->start;
+                $restOut = $rest->finish;
+                $sumRestSeconds += $restOut->diffInSeconds($restIn);
+            }
+            $restHours = floor($sumRestSeconds / 3600);
+            $restMinutes = sprintf('%02d', floor(($sumRestSeconds % 3600) / 60));
+            $rests[$work->id] = "{$restHours}:{$restMinutes}";
+            $totalAttendanceTime = $attendanceTime - $sumRestSeconds;
+            $totalAttendanceHours = floor($totalAttendanceTime / 3600);
+            $totalAttendanceMinutes = sprintf('%02d', floor(($totalAttendanceTime % 3600) / 60));
+            $resultAttendanceTime[$work->id] = "{$totalAttendanceHours}:{$totalAttendanceMinutes}";
+        }
+        return view('attendance-list', compact([
+                                        'year',
+                                        'month',
+                                        'startDate',
+                                        'finishDate',
+                                        'works',
+                                        'rests',
+                                        'resultAttendanceTime',
+        ]));
+    }
+
+    /**
+     *  今月の勤怠一覧画面を出力します。
      */
     public function showAttendanceList(){
         $user = Auth::user();

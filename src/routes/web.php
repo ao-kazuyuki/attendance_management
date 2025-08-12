@@ -14,6 +14,9 @@ Route::controller(AttendanceController::class)->group(function(){
         Route::post('/attendance/rest-out', 'restOut')->name('rest-out');    //休憩(戻)処理
         Route::get('/api/current-time', 'currentTime');                      //非同期に時間を取得
         Route::get('/attendance/list', 'showAttendanceList')->name('show-attendance-list');
+
+        Route::get('/attendance/list/{year}/{month}', 'selectAttendanceList')->name('select-attendance-list');
+
     });
 });
 
