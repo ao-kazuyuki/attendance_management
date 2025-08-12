@@ -9,23 +9,33 @@
     @endcomponent
 @endsection
 
+@php
+    $selectDate = new DateTime($year . '-' . $month . '-1');
+    $prevDate = (clone $selectDate)->modify('first day of previous month');
+    $nextDate = (clone $selectDate)->modify('first day of next month');
+    $prevDateYear = $prevDate->format('Y');
+    $prevDateMonth = $prevDate->format('m');
+    $nextDateYear = $nextDate->format('Y');
+    $nextDateMonth = $nextDate->format('m');
+@endphp
+
 @section('content')
 <div class="attendance-container">
     <h1 class="main-section">勤怠一覧</h1>
     <!-- 現在表示している年月と表示月の変更ボタン -->
     <div class="change-month-area">
-        <div class="content-group">
+        <a href="{{ route('select-attendance-list', ['year' => $prevDateYear, 'month' => $prevDateMonth]) }}" class="content-group">
             <img class="arrow-img" src="{{ asset('img/arrow.png') }}">
             <span class="prev">前月</span>
-        </div>
+        </a>
         <div class="content-group">
             <img class="calendar-img" src="{{ asset('img/calendar.png') }}">
             <h2 class="current-month">{{ $year . '/' .$month }}</h2>
         </div>
-        <div class="content-group">
+        <a href="{{ route('select-attendance-list', ['year' => $nextDateYear, 'month' => $nextDateMonth]) }}" class="content-group">
             <span class="next">翌月</span>
             <img class="arrow-img rotate" src="{{ asset('img/arrow.png') }}">
-        </div>
+        </a>
     </div>
     <!-- 勤怠一覧表 -->
     <table class="attendance-table">
