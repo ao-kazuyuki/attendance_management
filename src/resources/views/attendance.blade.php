@@ -32,13 +32,13 @@
                 @csrf
                 <button class="attendance-btn" type="submit">退勤</button>
             </form>
-            <form action="{{ route('break-in') }}" method="post">
+            <form action="{{ route('rest-in') }}" method="post">
                 @csrf
                 <button class="attendance-btn white" type="submit">休憩入</button>
             </form>
         </div>
     @elseif($user->getStatus()=='休憩中')
-        <form action="{{ route('break-out') }}" method="post">
+        <form action="{{ route('rest-out') }}" method="post">
             @csrf
             <button class="attendance-btn white" type="submit">休憩戻</button>
         </form>

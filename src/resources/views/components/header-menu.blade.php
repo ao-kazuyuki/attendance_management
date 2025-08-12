@@ -1,6 +1,6 @@
 <div class="header-menu">
-    <span class="header-menu__link">勤怠</span>
-    <span class="header-menu__link">勤怠一覧</span>
+    <a href="{{ route('show-attendance') }}" class="header-menu__link">勤怠</あ>
+    <a href="{{ route('show-attendance-list') }}" class="header-menu__link">勤怠一覧</a>
     <span class="header-menu__link">申請</span>
     <form action="/logout" method="post">
         @csrf
