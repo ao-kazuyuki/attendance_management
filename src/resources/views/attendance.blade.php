@@ -49,7 +49,6 @@
 
 <!-- 現在時刻を非同期に取得 -->
 <script>
-
     if(document.getElementById('flashMsg')){
         window.addEventListener('load', () => {
             const flashElm = document.getElementById('flashLayout');
@@ -57,12 +56,11 @@
             flashElm.classList.add('hide');
         });
     }
-
     const dateElm = document.getElementById('date');
     const timeElm = document.getElementById('time');
     const updateTime = async function(){
         try{
-            const res = await fetch('/api/current-time');
+            const res = await fetch("{{route('current-time')}}");
             const data = await res.json();
             dateElm.textContent = data.outputDate;
             timeElm.textContent = data.outputTime;

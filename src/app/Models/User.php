@@ -14,6 +14,129 @@ class User extends Authenticatable implements MustVerifyEmail
     use HasApiTokens, HasFactory, Notifiable;
 
     /**
+     *  ユーザーの現在の勤怠状況を返します。
+     *  @return string '勤務外','出勤中','休憩中','退勤済'のいずれかを返します。
+     */
+    public function getStatus(){
+        return optional($this->status)->content;
+    }
+
+    /**
+     *  ユーザーの勤怠状況を更新します。
+     *  @param string $statusId 勤務ステータスidを指定します。
+     *  @return void
+     */
+    public function updateStatusByUserId($statusId){
+        return $this->update(['status_id' => $statusId]);
+    }
+
+    /**
+     *  指定した日付に対応する勤怠レコードが存在するか調べます。
+     *  @param DateTime $date 対象の日付。引数を指定しない場合は現在の日付が指定されます。
+     *  @return bool 該当の勤怠レコードが存在する場合はtrue,そうでない場合はfalseを返します。
+     */
+    public function isWork(DateTime $date = new Datetime()):bool{
+        return $this->works()->whereDate('work_day', $date->format('Y-m-d'))->exists();
+    }
+
+    /**
+     *  指定した日付に対応する勤怠レコードを取得します。
+     *  @param DateTime $date 対象の日付。引数を指定しない場合は現在の日付が指定されます。
+     *  @return \Illuminate\Database\Eloquent\Collection|\App\Models\Work[]
+     */
+    public function getWork(DateTime $date = new Datetime()){
+        return $this->works()->whereDate('work_day', $date->format('Y-m-d'))->first();
+    }
+
+    /**
+     *  指定した日付に対応する最新の休憩レコードを取得します。
+     *  @param DateTime $date 対象の日付。引数を指定しない場合は現在の日付が指定されます。
+     *  @return \Illuminate\Database\Eloquent\Collection|\App\Models\Rest[]
+     */
+    public function getLatestRest(DateTime $date = new Datetime()){
+        return $this->rests()->whereDate('rest_day', $date->format('Y-m-d'))->orderBy('start', 'desc')->first();
+    }
+
+    /**
+     *  出勤処理を行います。
+     *  ユーザーが「出勤」ボタンをクリックしたときの日付と時間を'works'テーブルのレコードに記録します。
+     *  @return void
+     */
+    public function setStartAttendance(){
+        $now = new DateTime();
+        if(!$this->isWork()){
+            $this->works()->create(['work_day' => $now, 'start' => $now]);
+        }
+    }
+
+    /**
+     *  退勤処理を行います。
+     *  ユーザーが「退勤」ボタンをクリックしたときの時間を'works'テーブルのレコードに記録します。
+     *  @return void
+     */
+    public function setFinishAttendance(){
+        $now = new DateTime();
+        $work = $this->getWork($now);
+        if(!is_null($work->start)){
+            $work->update(['finish' => $now]);
+        }
+    }
+
+    /**
+     *  休憩(入)処理を行います。
+     *  ユーザーが「休憩入」ボタンをクリックしたときの時間を'rests'テーブルのレコードに記録します。
+     *  @return void
+     */
+    public function setStartRest(){
+        $now = new DateTime();
+        $work = $this->getWork($now);
+        $this->rests()->create([
+            'work_id' => $work->id,
+            'rest_day' => $now,
+            'start' => $now,
+        ]);
+    }
+
+    /**
+     *  休憩(戻)処理を行います。
+     *  ユーザーが「休憩戻」ボタンをクリックしたときの時間を'rests'テーブルのレコードに記録します。
+     *  @return void
+     */
+    public function setFinishRest(){
+        $now = new DateTime();
+        $rest = $this->getLatestRest($now);
+        if(!is_null($rest->start)){
+            $rest->update(['finish' => $now]);
+        }
+    }
+
+    /**
+     *  指定した日付間の勤務記録を取得します。
+     *  @param DateTime $startDate 開始日
+     *  @param DateTime $finishDate 終了日
+     *  @return \Illuminate\Database\Eloquent\Collection|\App\Models\Work[]
+     */
+    public function getWorksBetween(DateTime $startDate, DateTime $finishDate){
+        return $this->works()
+                    ->with('rests')
+                    ->whereDate('work_day', '>=', $startDate->format('Y-m-d'))
+                    ->whereDate('work_day', '<=', $finishDate->format('Y-m-d'))
+                    ->get();
+    }
+
+    public function status(){
+        return $this->belongsTo(Status::class);
+    }
+
+    public function works(){
+        return $this->hasMany(Work::class);
+    }
+
+    public function rests(){
+        return $this->hasMany(Rest::class);
+    }
+
+    /**
      * The attributes that are mass assignable.
      *
      * @var array<int, string>
@@ -43,106 +166,4 @@ class User extends Authenticatable implements MustVerifyEmail
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
-
-    public function status(){
-        return $this->belongsTo(Status::class);
-    }
-
-    public function works(){
-        return $this->hasMany(Work::class);
-    }
-
-    public function rests(){
-        return $this->hasMany(Rest::class);
-    }
-
-    /**
-     *  ユーザーの現在の勤務状況を返します。
-     *  @return string '勤務外','出勤中','休憩中','退勤済'のいずれかを返します。
-     */
-    public function getStatus(){
-        return optional($this->status)->content;
-    }
-
-    /**
-     *  ユーザーの勤務状況ステータスを更新します。
-     *  @param string $statusId 勤務ステータスidを指定します。
-     *  @return void
-     */
-    public function updateStatusByUserId($statusId){
-        return $this->update(['status_id' => $statusId]);
-    }
-
-    public function isWorkToday():bool{
-        $now = new DateTime();
-        return $this->works()->whereDate('created_at', $now->format('Y-m-d'))->exists();
-    }
-
-    /**
-     *  出勤処理を行います。
-     *  ユーザーが「出勤」ボタンをクリックしたときの時間を'works'テーブルの'start'カラムに記録します。
-     *  @return void
-     */
-    public function setStartAttendance(){
-        $now = new DateTime();
-        $isWork = $this->works()->whereDate('created_at', $now->format('Y-m-d'))->exists();
-        if(!$isWork){
-            $this->works()->create(['start' => $now]);
-        }
-    }
-
-    /**
-     *  退勤処理を行います。
-     *  ユーザーが「退勤」ボタンをクリックしたときの時間を'works'テーブルの'finish'カラムに記録します。
-     *  @return void
-     */
-    public function setFinishAttendance(){
-        $now = new DateTime();
-        $targetWork = $this->works()->whereDate('created_at', $now->format('Y-m-d'))->first();
-        if(!is_null($targetWork->start)){
-            $targetWork->update(['finish' => $now]);
-        }
-    }
-
-    /**
-     *  休憩(入)処理を行います。
-     *  ユーザーが「休憩入」ボタンをクリックしたときの時間を'rests'テーブルの'start'カラムに記録します。
-     *  @return void
-     */
-    public function setStartRest(){
-        $now = new DateTime();
-        $targetWork = $this->works()->whereDate('created_at', $now->format('Y-m-d'))->first();
-        $this->rests()->create([
-            'work_id' => $targetWork->id,
-            'start' => $now,
-        ]);
-    }
-
-    /**
-     *  休憩(戻)処理を行います。
-     *  ユーザーが「休憩戻」ボタンをクリックしたときの時間を'rests'テーブルの'finish'カラムに記録します。
-     *  @return void
-     */
-    public function setFinishRest(){
-        $now = new DateTime();
-        $targetRest = $this->rests()->whereDate('created_at', $now->format('Y-m-d'))->orderBy('created_at', 'desc')->first();
-        if(!is_null($targetRest->start)){
-            $targetRest->update(['finish' => $now]);
-        }
-    }
-
-    /**
-     *  指定した日付間の勤務記録を取得します。
-     *  @param DateTime $startDate 開始日
-     *  @param DateTime $finishDate 終了日
-     *  @return \Illuminate\Database\Eloquent\Collection|\App\Models\Work[]
-     */
-    public function getWorksBetween(DateTime $startDate, DateTime $finishDate){
-        return $this->works()
-                    ->with('rests')
-                    ->whereDate('created_at', '>=', $startDate->format('Y-m-d'))
-                    ->whereDate('created_at', '<=', $finishDate->format('Y-m-d'))
-                    ->get();
-    }
-
 }

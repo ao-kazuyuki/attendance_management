@@ -1,0 +1,133 @@
+body {
+    height: calc(100vh - 80px);
+    background-color: #f0eff2;
+}
+
+.attendance-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.main-section {
+    width: 920px;
+    font-size: 30px;
+    font-weight: bold;
+    border-left: 8px solid #000000;
+    padding-left: 20px;
+    margin: 90px 0 50px 0;
+}
+
+.detail-table {
+    width: 900px;
+    background-color: #ffffff;
+    border-radius: 10px;
+}
+
+.detail-table th {
+    width: 300px;
+    text-align: left;
+    padding-left: 64px;
+    font-size: 16px;
+    color: #737373;
+    font-weight: bold;
+}
+
+.detail-table td {
+    font-size: 16px;
+    color: #000000;
+    font-weight: bold;
+}
+
+.detail-table tr td:nth-child(2) {
+    padding-left: 40px;
+    width: 140px;
+}
+
+.detail-table tr:first-child {
+    height: 80px;
+}
+
+.detail-table tr:not(:first-child) {
+    height: 90px;
+}
+
+.detail-table tr:last-child {
+    height: 105px;
+}
+
+.detail-table tr:not(:last-child) th,
+.detail-table tr:not(:last-child) td {
+    border-bottom: 2px solid #e1e1e1;
+}
+
+.left-padding {
+    padding-left: 25px;
+}
+
+.input-time {
+    text-align: center;
+    width: 100px;
+    height: 30px;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.form-error {
+    font-size: 20px;
+    color: #ff0000;
+    min-height: 35px;
+}
+
+.period {
+    text-align: center;
+    width: 120px;
+}
+
+.remarks {
+    font-size: 14px;
+    color: #000000;
+    font-weight: bold;
+    padding: 10px 15px;
+    width: 316px;
+    height: 72px;
+    border: 1px solid #d9d9d9;
+    resize: none;
+    border-radius: 4px;
+}
+
+.remarks-non-edit {
+    font-size: 14px;
+    color: #000000;
+    font-weight: bold;
+    padding: 10px 15px;
+    width: 316px;
+}
+
+.button-layout {
+    width: 900px;
+    display: flex;
+    justify-content: end;
+}
+
+.correction-btn {
+    width: 130px;
+    height: 50px;
+    border-radius: 5px;
+    background-color: #000000;
+    color: #ffffff;
+    font-size: 22px;
+    font-weight: bold;
+    border: none;
+    margin: 35px 0 100px 0;
+    cursor: pointer;
+}
+
+.attention {
+    font-size: 18px;
+    font-weight: bold;
+    color: #ff0000;
+    opacity: 0.5;
+    margin-top: 25px;
+    margin-bottom: 100px;
+}
