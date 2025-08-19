@@ -12,13 +12,19 @@ class Rest extends Model
     protected $fillable = [
         'user_id',
         'work_id',
+        'rest_day',
         'start',
         'finish',
+        'correction_start',
+        'correction_finish',
     ];
 
     protected $casts = [
+        'rest_day' => 'date',
         'start' => 'datetime',
         'finish' => 'datetime',
+        'correction_start' => 'datetime',
+        'correction_finish' => 'datetime',
     ];
 
     public function user(){

@@ -96,6 +96,23 @@ body {
     height: 40px;
 }
 
-.attendance-table .detail {
+.attendance-table tr th:first-child,
+.attendance-table tr td:first-child {
+    width: 25%;
+    text-align: left;
+    padding-left: 55px;
+}
+
+.attendance-table tr th:not(:first-child),
+.attendance-table tr td:not(:first-child) {
+    width: 15%;
+}
+
+.attendance-table tr:last-child td {
+    border-bottom: none;
+}
+
+.attendance-table a {
     color: #000000;
+    text-decoration: none;
 }

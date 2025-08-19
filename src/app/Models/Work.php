@@ -11,15 +11,26 @@ class Work extends Model
 
     protected $fillable = [
         'user_id',
+        'work_day',
         'start',
         'finish',
-        'comment',
+        'correction_start',
+        'correction_finish',
+        'is_demand',
     ];
 
     protected $casts = [
+        'work_day' => 'date',
         'start' => 'datetime',
         'finish' => 'datetime',
+        'correction_start' => 'datetime',
+        'correction_finish' => 'datetime',
+        'is_demand' => 'boolean',
     ];
+
+    public function demand(){
+        return $this->hasOne(Demand::class);
+    }
 
     public function rests(){
         return $this->hasMany(Rest::class);
@@ -29,4 +40,7 @@ class Work extends Model
         return $this->finish->diffInSeconds($this->start);
     }
 
+    public function getAttendanceCorrectionTime(){
+        return $this->correction_finish->diffInSeconds($this->correction_start);
+    }
 }
