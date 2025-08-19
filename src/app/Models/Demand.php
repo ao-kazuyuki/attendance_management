@@ -20,4 +20,13 @@ class Demand extends Model
     protected $casts = [
         'request_day' => 'date',
     ];
+
+    public function user(){
+        return $this->belongsTo(User::class);
+    }
+
+    public function work(){
+        return $this->belongsTo(Work::class);
+    }
+
 }

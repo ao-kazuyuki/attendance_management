@@ -29,6 +29,7 @@ Route::controller(AttendanceController::class)->group(function(){
         Route::get('/attendance/list/{year}/{month}', 'selectAttendanceList')->name('select-attendance-list');
         Route::get('/attendance/{id}', 'showDetailAttendance')->name('show-detail-attendance');
         Route::post('/attendance/{id}', 'storeCorrection')->name('correction-request');
+        Route::get('/stamp_correction_request/list', 'showCorrectionList')->name('show-correction-list');
     });
 });
 
