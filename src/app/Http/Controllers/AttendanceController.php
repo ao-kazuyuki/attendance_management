@@ -186,4 +186,15 @@ class AttendanceController extends Controller
         }
         return redirect(route('show-detail-attendance', ['id' => $id]));
     }
+
+    public function showCorrectionList(Request $request){
+        $user = Auth::user();
+        if($request->page == 'wait' || $request->page == ''){
+            $demands = Demand::with(['user', 'work'])->where('user_id', $user->id)->where('status', '承認待ち')->get();
+        }else if($request->page == 'approval'){
+            $demands = Demand::with(['user', 'work'])->where('user_id', $user->id)->where('status', '承認済み')->get();
+        }
+        return view('attendance-correction', compact('request', 'user', 'demands'));
+    }
+
 }
