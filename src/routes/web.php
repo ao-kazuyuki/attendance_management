@@ -1,7 +1,8 @@
 <?php
 
-use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\AttendanceController;
+use App\Http\Controllers\AdminController;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Support\Facades\Route;
 
@@ -30,6 +31,16 @@ Route::controller(AttendanceController::class)->group(function(){
         Route::get('/attendance/{id}', 'showDetailAttendance')->name('show-detail-attendance');
         Route::post('/attendance/{id}', 'storeCorrection')->name('correction-request');
         Route::get('/stamp_correction_request/list', 'showCorrectionList')->name('show-correction-list');
+    });
+});
+
+Route::controller(AdminController::class)->group(function(){
+    Route::middleware('guest')->group(function(){
+        Route::get('/admin/login', 'showLogin')->name('admin-login');
+        Route::post('/admin/login', 'login');
+    });
+    Route::middleware(['is_admin'])->group(function(){
+        Route::get('/admin/attendance/list', 'showAttendanceList')->name('admin-show-attendance-list');
     });
 });
 

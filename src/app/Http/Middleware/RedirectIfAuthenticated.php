@@ -20,13 +20,14 @@ class RedirectIfAuthenticated
     public function handle(Request $request, Closure $next, ...$guards)
     {
         $guards = empty($guards) ? [null] : $guards;
-
         foreach ($guards as $guard) {
             if (Auth::guard($guard)->check()) {
-                return redirect(RouteServiceProvider::HOME);
+                if(Auth::user()->is_admin){
+                    return redirect()->route('admin-show-attendance-list');
+                }
+                return redirect()->route('show-attendance');
             }
         }
-
         return $next($request);
     }
 }
