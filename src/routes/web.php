@@ -41,6 +41,7 @@ Route::controller(AdminController::class)->group(function(){
     });
     Route::middleware(['is_admin'])->group(function(){
         Route::get('/admin/attendance/list', 'showAttendanceList')->name('admin-show-attendance-list');
+        Route::get('/admin/attendance/list/{year}/{month}/{day}', 'selectAttendanceList')->name('admin-select-attendance-list');
     });
 });
 
