@@ -1,17 +1,21 @@
 <div class="header-menu">
     @if(!Auth::user()->is_admin)
-        <!-- 管理者権限メニュー -->
+        <!-- 一般ユーザーメニュー -->
         <a href="{{ route('show-attendance') }}" class="header-menu__link">勤怠</a>
         <a href="{{ route('show-attendance-list') }}" class="header-menu__link">勤怠一覧</a>
         <a href="{{ route('show-correction-list') }}" class="header-menu__link">申請</a>
+        <form action="{{route('logout')}}" method="post">
+            @csrf
+            <button class="header-menu__link">ログアウト</button>
+        </form>
     @else
-        <!-- 一般ユーザーメニュー -->
+        <!-- 管理者権限メニュー -->
         <a href="{{ route('admin-show-attendance-list') }}" class="header-menu__link">勤怠一覧</a>
         <a href="" class="header-menu__link">スタッフ一覧</a>
         <a href="" class="header-menu__link">申請一覧</a>
+        <form action="{{route('admin-logout')}}" method="post">
+            @csrf
+            <button class="header-menu__link">ログアウト</button>
+        </form>
     @endif
-    <form action="/logout" method="post">
-        @csrf
-        <button class="header-menu__link">ログアウト</button>
-    </form>
 </div>

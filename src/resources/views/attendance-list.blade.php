@@ -62,7 +62,7 @@
                 $dayOfSumRestTime = '';
                 $dayOfResultAttendanceTime = '';
                 if($work){
-                    if(!$work->is_demand){
+                    if(!$work->is_demand || $work->demand->status == '承認待ち'){
                         if($work->start){
                             $dayOfStartAttendance = (new DateTime($work->start))->format('H:i');
                         }

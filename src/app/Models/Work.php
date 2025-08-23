@@ -41,10 +41,16 @@ class Work extends Model
     }
 
     public function getAttendanceTime(){
+        if(is_null($this->start) || is_null($this->finish)){
+            return 0;
+        }
         return $this->finish->diffInSeconds($this->start);
     }
 
     public function getAttendanceCorrectionTime(){
+        if(is_null($this->correction_start) || is_null($this->correction_finish)){
+            return 0;
+        }
         return $this->correction_finish->diffInSeconds($this->correction_start);
     }
 }

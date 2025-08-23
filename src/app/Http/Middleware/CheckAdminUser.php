@@ -18,10 +18,7 @@ class CheckAdminUser
     public function handle(Request $request, Closure $next)
     {
         if(!Auth::user()->is_admin){
-            Auth::logout();
-            $request->session()->invalidate();
-            $request->session()->regenerateToken();
-            return redirect()->route('login');
+            return redirect()->route('show-attendance');
         }
         return $next($request);
     }

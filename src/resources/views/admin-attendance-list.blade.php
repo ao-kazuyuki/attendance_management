@@ -48,7 +48,7 @@
                 $dayOfFinishAttendance = '';
                 $dayOfSumRestTime = '';
                 $dayOfResultAttendanceTime = '';
-                if(!$work->is_demand){
+                if(!$work->is_demand || $work->demand->status == '承認待ち'){
                     if($work->start){
                         $dayOfStartAttendance = (new DateTime($work->start))->format('H:i');
                     }
@@ -74,7 +74,7 @@
                 echo "<td>" . $dayOfFinishAttendance . "</td>";
                 echo "<td>" . $dayOfSumRestTime . "</td>";
                 echo "<td>" . $dayOfResultAttendanceTime . "</td>";
-                echo "<td>" . '<a class="detail-link" href="' . route('show-detail-attendance', ['id' => $work->id ?? 0]) . '">詳細</a></td></tr>';
+                echo "<td>" . '<a class="detail-link" href="' . route('admin-show-detail-attendance', ['id' => $work->id ?? 0]) . '">詳細</a></td></tr>';
             }
         @endphp
     </table>
