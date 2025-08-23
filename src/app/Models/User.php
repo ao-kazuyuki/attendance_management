@@ -118,7 +118,7 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     public function getWorksBetween(DateTime $startDate, DateTime $finishDate){
         return $this->works()
-                    ->with('rests')
+                    ->with('rests', 'demand')
                     ->whereDate('work_day', '>=', $startDate->format('Y-m-d'))
                     ->whereDate('work_day', '<=', $finishDate->format('Y-m-d'))
                     ->get();

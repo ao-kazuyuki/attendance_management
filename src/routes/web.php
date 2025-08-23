@@ -39,9 +39,14 @@ Route::controller(AdminController::class)->group(function(){
         Route::get('/admin/login', 'showLogin')->name('admin-login');
         Route::post('/admin/login', 'login');
     });
+    Route::middleware('auth')->group(function(){
+        Route::post('/admin/logout', 'logout')->name('admin-logout');
+    });
     Route::middleware(['is_admin'])->group(function(){
         Route::get('/admin/attendance/list', 'showAttendanceList')->name('admin-show-attendance-list');
         Route::get('/admin/attendance/list/{year}/{month}/{day}', 'selectAttendanceList')->name('admin-select-attendance-list');
+        Route::get('/admin/attendance/{id}', 'showDetailAttendance')->name('admin-show-detail-attendance');
+        Route::post('/admin/attendance/{id}', 'storeCorrection')->name('admin-correction-request');
     });
 });
 

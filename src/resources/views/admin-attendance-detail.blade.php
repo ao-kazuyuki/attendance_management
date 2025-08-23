@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('css')
-<link rel="stylesheet" href="{{ asset('css/attendance-detail.css') }}">
+<link rel="stylesheet" href="{{ asset('css/admin-attendance-detail.css') }}">
 @endsection
 
 @section('header-menu')
@@ -30,7 +30,7 @@
 @section('content')
 <div class="attendance-container">
     <h1 class="main-section">勤怠詳細</h1>
-    <form action="{{ route('correction-request', ['id' => $work->id] ) }}" method="post">
+    <form action="{{ route('admin-correction-request', ['id' => $work->id] ) }}" method="post">
         @csrf
         <table class="detail-table">
             <!-- 名前 -->
@@ -130,7 +130,7 @@
                         echo '<div class="attention">*承認待ちのため修正はできません。</div>';
                     }else if($demand->status == '承認済み'){
                         echo '<div class="approved">承認済み</div>';
-                    } 
+                    }
                 }
             @endphp
         </div>

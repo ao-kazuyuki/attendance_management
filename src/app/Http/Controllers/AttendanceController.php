@@ -114,39 +114,47 @@ class AttendanceController extends Controller
             //複数回の休憩時間の合計を'0:00'形式で記憶
             $sumRestSeconds = 0;
             foreach($work->rests as $rest){
-                if(!$work->is_demand){
-                    $sumRestSeconds += $rest->finish->diffInSeconds($rest->start);
+                if(!$work->is_demand || $work->demand->status == '承認待ち'){
+                    if(!is_null($rest->start) && !is_null($rest->finish)){
+                        $sumRestSeconds += $rest->finish->diffInSeconds($rest->start);
+                    }
                 }else{
-                    $sumRestSeconds += $rest->correction_finish->diffInSeconds($rest->correction_start);
+                    if(!is_null($rest->correction_start) && !is_null($rest->correction_finish)){
+                        $sumRestSeconds += $rest->correction_finish->diffInSeconds($rest->correction_start);
+                    }
                 }
             }
             $restHours = floor($sumRestSeconds / 3600);
             $restMinutes = sprintf('%02d', floor(($sumRestSeconds % 3600) / 60));
             $rests[$work->id] = "{$restHours}:{$restMinutes}";
             //休憩時間を差し引いたその日の労働時間を'0:00'形式で記憶
-            if(!$work->is_demand){
+            if(!$work->is_demand || $work->demand->status == '承認待ち'){
                 $attendanceTime = $work->getAttendanceTime();
             }else{
                 $attendanceTime = $work->getAttendanceCorrectionTime();
             }
-            $totalAttendanceTime = $attendanceTime - $sumRestSeconds;
-            $totalAttendanceHours = floor($totalAttendanceTime / 3600);
-            $totalAttendanceMinutes = sprintf('%02d', floor(($totalAttendanceTime % 3600) / 60));
-            $resultAttendanceTime[$work->id] = "{$totalAttendanceHours}:{$totalAttendanceMinutes}";
+            if($attendanceTime != 0){
+                $totalAttendanceTime = $attendanceTime - $sumRestSeconds;
+                $totalAttendanceHours = floor($totalAttendanceTime / 3600);
+                $totalAttendanceMinutes = sprintf('%02d', floor(($totalAttendanceTime % 3600) / 60));
+                $resultAttendanceTime[$work->id] = "{$totalAttendanceHours}:{$totalAttendanceMinutes}";
+            }else{
+                $resultAttendanceTime[$work->id] = "0:00";
+            }
         }
         return view('attendance-list', compact(['year', 'month', 'startDate', 'finishDate', 'works', 'rests', 'resultAttendanceTime']));
     }
 
     public function showDetailAttendance($id){
         $user = Auth::user();
-        $work = Work::find($id);
+        $work = Work::with(['demand'])->find($id);
         $rests = Rest::where('user_id', $user->id)->where('work_id', $work->id)->get();
         $restCount = $rests->count();
         if(!$work->is_demand){
             return view('attendance-detail', compact(['user', 'work', 'rests', 'restCount']));
         }else{
-            $content = $work->demand->content;
-            return view('attendance-detail', compact(['user', 'work', 'rests', 'restCount', 'content']));
+            $demand = $work->demand;
+            return view('attendance-detail', compact(['user', 'work', 'rests', 'restCount', 'demand']));
         }
     }
 

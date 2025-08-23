@@ -35,24 +35,32 @@ class AuthController extends Controller
     }
 
     public function login( LoginRequest $request ){
-        $user = [
-            'email' => $request->input('email'),
-            'password' => $request->input('password'),
-        ];
-        if(Auth::attempt($user, $request->filled('remember'))) {
-            $request->session()->regenerate();
-            return redirect()->intended('/attendance');
+        $email = $request->input('email');
+        $pw = $request->input('password');
+        if(Auth::validate(['email' => $email, 'password' => $pw])){
+            $user = User::where('email', '=', $email)->first();
+            if($user->is_admin){
+                return redirect()->route('admin-login');
+            }
+            $general_user = [
+                'email' => $request->input('email'),
+                'password' => $request->input('password'),
+            ];
+            if(Auth::attempt($general_user, $request->filled('remember'))) {
+                $request->session()->regenerate();
+                return redirect()->route('show-attendance');
+            }
+        }else{
+            throw ValidationException::withMessages([
+                'email' => __('ログイン情報が登録されていません'),
+            ]);
         }
-        throw ValidationException::withMessages([
-            'email' => __('ログイン情報が登録されていません'),
-        ]);        
     }
 
     public function logout( Request $request ){
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-        return redirect('/login');
+        return redirect()->route('login');
     }
-
 }
