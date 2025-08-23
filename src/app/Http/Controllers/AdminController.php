@@ -162,4 +162,12 @@ class AdminController extends Controller
         return redirect(route('admin-show-detail-attendance', ['id' => $id]));        
     }
 
+    public function showStaffList(){
+        $users = User::where('is_admin', '!=', true)->get();
+        return(view('admin-staff-list', compact(['users'])));
+    }
+
+    public function showStaffAttendance($id){
+        dd('スタッフ別勤怠一覧画面 id=' . $id);
+    }
 }

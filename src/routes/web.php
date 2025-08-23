@@ -47,6 +47,8 @@ Route::controller(AdminController::class)->group(function(){
         Route::get('/admin/attendance/list/{year}/{month}/{day}', 'selectAttendanceList')->name('admin-select-attendance-list');
         Route::get('/admin/attendance/{id}', 'showDetailAttendance')->name('admin-show-detail-attendance');
         Route::post('/admin/attendance/{id}', 'storeCorrection')->name('admin-correction-request');
+        Route::get('/admin/staff/list', 'showStaffList')->name('show-staff-list');
+        Route::get('/admin/attendance/staff/{id}', 'showStaffAttendance')->name('staff-attendance-list');
     });
 });
 
