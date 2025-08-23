@@ -167,7 +167,68 @@ class AdminController extends Controller
         return(view('admin-staff-list', compact(['users'])));
     }
 
-    public function showStaffAttendance($id){
-        dd('スタッフ別勤怠一覧画面 id=' . $id);
+    /**
+     *  スタッフ別に今月の勤怠一覧画面を出力します。
+     */
+    public function showStaffAttendanceList($id){
+        $date = new DateTime();
+        return $this->showStaffAttendanceListMain($id, $date);
+    }
+
+    /**
+     *  スタッフ別に指定した年月で勤怠一覧画面を出力します。
+     */
+    public function selectStaffAttendanceList($id, $year, $month){
+        $date = new DateTime($year . '-' . $month . '-1');
+        return $this->showStaffAttendanceListMain($id, $date);
+    }
+
+    /**
+     *  スタッフ別に今月または指定した年月で勤怠一覧画面を出力します。
+     */
+    public function showStaffAttendanceListMain($id, DateTime $date){
+        //出力年月の初日から月末までの勤怠レコードを取得
+        $user = User::find($id);
+        $year = $date->format('Y');
+        $month = $date->format('m');
+        $startDate = (clone $date)->modify('first day of this month');
+        $finishDate = (clone $date)->modify('last day of this month');
+        $works = $user->getWorksBetween($startDate, $finishDate);
+        //各日の勤怠レコード及び休憩レコードがあれば労働時間と休憩時間を計算して配列に格納
+        $resultAttendanceTime = [];
+        $rests = [];
+        foreach($works as $work){
+            //複数回の休憩時間の合計を'0:00'形式で記憶
+            $sumRestSeconds = 0;
+            foreach($work->rests as $rest){
+                if(!$work->is_demand || $work->demand->status == '承認待ち'){
+                    if(!is_null($rest->start) && !is_null($rest->finish)){
+                        $sumRestSeconds += $rest->finish->diffInSeconds($rest->start);
+                    }
+                }else{
+                    if(!is_null($rest->correction_start) && !is_null($rest->correction_finish)){
+                        $sumRestSeconds += $rest->correction_finish->diffInSeconds($rest->correction_start);
+                    }
+                }
+            }
+            $restHours = floor($sumRestSeconds / 3600);
+            $restMinutes = sprintf('%02d', floor(($sumRestSeconds % 3600) / 60));
+            $rests[$work->id] = "{$restHours}:{$restMinutes}";
+            //休憩時間を差し引いたその日の労働時間を'0:00'形式で記憶
+            if(!$work->is_demand || $work->demand->status == '承認待ち'){
+                $attendanceTime = $work->getAttendanceTime();
+            }else{
+                $attendanceTime = $work->getAttendanceCorrectionTime();
+            }
+            if($attendanceTime != 0){
+                $totalAttendanceTime = $attendanceTime - $sumRestSeconds;
+                $totalAttendanceHours = floor($totalAttendanceTime / 3600);
+                $totalAttendanceMinutes = sprintf('%02d', floor(($totalAttendanceTime % 3600) / 60));
+                $resultAttendanceTime[$work->id] = "{$totalAttendanceHours}:{$totalAttendanceMinutes}";
+            }else{
+                $resultAttendanceTime[$work->id] = "0:00";
+            }
+        }
+        return view('admin-staff-attendance-list', compact(['user', 'year', 'month', 'startDate', 'finishDate', 'works', 'rests', 'resultAttendanceTime']));
     }
 }
