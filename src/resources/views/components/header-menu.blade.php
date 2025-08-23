@@ -11,7 +11,7 @@
     @else
         <!-- 管理者権限メニュー -->
         <a href="{{ route('admin-show-attendance-list') }}" class="header-menu__link">勤怠一覧</a>
-        <a href="" class="header-menu__link">スタッフ一覧</a>
+        <a href="{{ route('show-staff-list') }}" class="header-menu__link">スタッフ一覧</a>
         <a href="" class="header-menu__link">申請一覧</a>
         <form action="{{route('admin-logout')}}" method="post">
             @csrf
