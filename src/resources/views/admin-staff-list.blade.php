@@ -19,7 +19,7 @@
             foreach($users as $user){
                 echo "<tr><td>" . $user->name  . "</td>";
                 echo "<td>" . $user->email . "</td>";
-                echo "<td>" . '<a class="detail-link" href="' . route('staff-attendance-list', ['id' => $user->id]) . '">詳細</a></td></tr>';
+                echo "<td>" . '<a class="detail-link" href="' . route('show-staff-attendance-list', ['id' => $user->id]) . '">詳細</a></td></tr>';
             }
         @endphp
     </table>
