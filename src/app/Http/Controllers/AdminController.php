@@ -159,7 +159,7 @@ class AdminController extends Controller
                 'correction_finish' => $request['add-finish-rest'],
             ]);
         }
-        return redirect(route('admin-show-detail-attendance', ['id' => $id]));        
+        return redirect(route('admin-show-detail-attendance', ['id' => $id]));
     }
 
     public function showStaffList(){
@@ -241,4 +241,18 @@ class AdminController extends Controller
         return view('admin-attendance-correction', compact('request', 'demands'));
     }
 
+    public function showApproval($attendance_correct_request){
+        $work = Work::with(['user', 'demand'])->find($attendance_correct_request);
+        $user = $work->user;
+        $rests = Rest::where('user_id', $user->id)->where('work_id', $work->id)->get();
+        $restCount = $rests->count();
+        $demand = $work->demand;
+        return view('admin-approval', compact(['user', 'work', 'rests', 'restCount', 'demand']));
+    }
+
+    public function storeApproval($attendance_correct_request){
+        $work = Work::with(['user'])->find($attendance_correct_request);
+        Demand::where('user_id', '=', $work->user->id)->where('work_id', '=', $work->id)->update(['status' => '承認済み']);
+        return redirect(route('show-approval', ['attendance_correct_request' => $attendance_correct_request]));
+    }
 }

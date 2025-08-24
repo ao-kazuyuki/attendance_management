@@ -34,7 +34,7 @@
                 echo "<td>" . $demand->work->work_day->format('Y-m-d') . "</td>";
                 echo "<td>" . $demand->content . "</td>";
                 echo "<td>" . $demand->request_day->format('Y-m-d') . "</td>";
-                echo "<td>" . '<a class="detail-link" href="' . route('admin-show-detail-attendance', ['id' => $demand->work->id ?? 0]) . '">詳細</a></td></tr>';
+                echo "<td>" . '<a class="detail-link" href="' . route('show-approval', ['attendance_correct_request' => $demand->work->id ?? 0]) . '">詳細</a></td></tr>';
             }
         @endphp
     </table>
