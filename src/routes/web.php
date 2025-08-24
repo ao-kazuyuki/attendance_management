@@ -30,7 +30,7 @@ Route::controller(AttendanceController::class)->group(function(){
         Route::get('/attendance/list/{year}/{month}', 'selectAttendanceList')->name('select-attendance-list');
         Route::get('/attendance/{id}', 'showDetailAttendance')->name('show-detail-attendance');
         Route::post('/attendance/{id}', 'storeCorrection')->name('correction-request');
-        Route::get('/stamp_correction_request/list', 'showCorrectionList')->name('show-correction-list');
+        Route::get('/general/stamp_correction_request/list', 'showCorrectionList')->name('general-show-correction-list');
     });
 });
 
@@ -50,6 +50,7 @@ Route::controller(AdminController::class)->group(function(){
         Route::get('/admin/staff/list', 'showStaffList')->name('show-staff-list');
         Route::get('/admin/attendance/staff/{id}', 'showStaffAttendanceList')->name('show-staff-attendance-list');
         Route::get('/admin/attendance/staff/{id}/{year}/{month}', 'selectStaffAttendanceList')->name('select-staff-attendance-list');
+        Route::get('/admin/stamp_correction_request/list', 'showCorrectionList')->name('admin-show-correction-list');
     });
 });
 

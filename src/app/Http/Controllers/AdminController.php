@@ -231,4 +231,14 @@ class AdminController extends Controller
         }
         return view('admin-staff-attendance-list', compact(['user', 'year', 'month', 'startDate', 'finishDate', 'works', 'rests', 'resultAttendanceTime']));
     }
+
+    public function showCorrectionList(Request $request){
+        if($request->page == 'wait' || $request->page == ''){
+            $demands = Demand::with(['user', 'work'])->where('status', '承認待ち')->get();
+        }else if($request->page == 'approval'){
+            $demands = Demand::with(['user', 'work'])->where('status', '承認済み')->get();
+        }
+        return view('admin-attendance-correction', compact('request', 'demands'));
+    }
+
 }
