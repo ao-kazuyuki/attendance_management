@@ -51,6 +51,8 @@ Route::controller(AdminController::class)->group(function(){
         Route::get('/admin/attendance/staff/{id}', 'showStaffAttendanceList')->name('show-staff-attendance-list');
         Route::get('/admin/attendance/staff/{id}/{year}/{month}', 'selectStaffAttendanceList')->name('select-staff-attendance-list');
         Route::get('/admin/stamp_correction_request/list', 'showCorrectionList')->name('admin-show-correction-list');
+        Route::get('/stamp_correction_request/approve/{attendance_correct_request}', 'showApproval')->name('show-approval');
+        Route::post('/admin/approval/{attendance_correct_request}', 'storeApproval')->name('admin-approval-request');
     });
 });
 
