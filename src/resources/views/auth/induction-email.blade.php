@@ -14,7 +14,7 @@
 
 <div class="guidance-layout">
     <p class="guidance-content">登録していただいたメールアドレスに認証メールを送付しました。<br>メール認証を完了してください。<p>
-    <form>
+    <form action="https://mailtrap.io/">
         @csrf
         <button class="form-button" type="submit">認証はこちらから</button>
     </form>

@@ -16,11 +16,11 @@
     <div class="select-state-area">
         @isset($request)
             @if($request->page == 'wait' || $request->page == '')
-                <h2 class="select-content selected"><a href="{{ route('show-correction-list', ['page' => 'wait']) }}">承認待ち</a></h2>
-                <h2 class="select-content"><a href="{{ route('show-correction-list', ['page' => 'approval']) }}">承認済み</a></h2>
+                <h2 class="select-content selected"><a href="{{ route('general-show-correction-list', ['page' => 'wait']) }}">承認待ち</a></h2>
+                <h2 class="select-content"><a href="{{ route('general-show-correction-list', ['page' => 'approval']) }}">承認済み</a></h2>
             @elseif($request->page == 'approval')
-                <h2 class="select-content"><a href="{{ route('show-correction-list', ['page' => 'wait']) }}">承認待ち</a></h2>
-                <h2 class="select-content selected"><a href="{{ route('show-correction-list', ['page' => 'approval']) }}">承認済み</a></h2>
+                <h2 class="select-content"><a href="{{ route('general-show-correction-list', ['page' => 'wait']) }}">承認待ち</a></h2>
+                <h2 class="select-content selected"><a href="{{ route('general-show-correction-list', ['page' => 'approval']) }}">承認済み</a></h2>
             @endif
         @endisset
     </div>
