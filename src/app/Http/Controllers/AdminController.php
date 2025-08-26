@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\AdminLoginRequest;
 use App\Http\Requests\CorrectionRequest;
+use App\Http\Requests\LoginRequest;
 use App\Models\Demand;
 use App\Models\Rest;
 use App\Models\User;
@@ -19,7 +19,7 @@ class AdminController extends Controller
         return view('auth.admin-login');
     }
 
-    public function login(AdminLoginRequest $request){
+    public function login(LoginRequest $request){
         $email = $request->input('email');
         $pw = $request->input('password');
         if(Auth::validate(['email' => $email, 'password' => $pw])){
