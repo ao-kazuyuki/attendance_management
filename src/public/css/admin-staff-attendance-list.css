@@ -76,7 +76,7 @@ body {
     width: 900px;
     background-color: #ffffff;
     border-radius: 10px;
-    margin-bottom: 100px;
+    margin-bottom: 60px;
 }
 
 .attendance-table th {
@@ -115,4 +115,24 @@ body {
 .attendance-table a {
     color: #000000;
     text-decoration: none;
+}
+
+.csv-layout {
+    width: 900px;
+    display: flex;
+    justify-content: right;
+}
+
+.csv-btn {
+    background-color: #000000;
+    color: #ffffff;
+    font-size: 22px;
+    font-weight: bold;
+    border: none;
+    border-radius: 5px;
+    text-align: center;
+    width: 184px;
+    height: 50px;
+    margin-bottom: 100px;
+    cursor: pointer;
 }

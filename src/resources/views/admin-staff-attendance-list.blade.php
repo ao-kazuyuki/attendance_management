@@ -97,5 +97,9 @@
             }
         @endphp
     </table>
+    <form class="csv-layout" action="{{ route('admin-export-csv', ['user_id' => $user->id, 'year' => $year, 'month' => $month ]) }}" method="post">
+        @csrf
+        <input class="csv-btn" type="submit" value="CSV出力">
+    </form>
 </div>
 @endsection
