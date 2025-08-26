@@ -11,6 +11,7 @@ use App\Models\Work;
 use DateTime;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Response;
 use Illuminate\Validation\ValidationException;
 
 class AdminController extends Controller
@@ -254,5 +255,76 @@ class AdminController extends Controller
         $work = Work::with(['user'])->find($attendance_correct_request);
         Demand::where('user_id', '=', $work->user->id)->where('work_id', '=', $work->id)->update(['status' => '承認済み']);
         return redirect(route('show-approval', ['attendance_correct_request' => $attendance_correct_request]));
+    }
+
+    public function exportCsv($user_id, $year, $month){
+        //出力年月の初日から月末までの勤怠レコードを取得
+        $user = User::find($user_id);
+        $date = new DateTime($year . '-' . $month . '-1');
+        $startDate = (clone $date)->modify('first day of this month');
+        $finishDate = (clone $date)->modify('last day of this month');
+        $works = $user->getWorksBetween($startDate, $finishDate);
+        //各日の勤怠レコード及び休憩レコードがあれば労働時間と休憩時間を計算して配列に格納
+        $resultAttendanceTime = [];
+        $rests = [];
+        $header = ['日付', '出勤', '退勤', '休憩', '合計'];
+        $datas = [];
+        array_push($datas, $header);
+        foreach($works as $work){
+            //複数回の休憩時間の合計を'0:00'形式で記憶
+            $sumRestSeconds = 0;
+            foreach($work->rests as $rest){
+                if(!$work->is_demand || $work->demand->status == '承認待ち'){
+                    if(!is_null($rest->start) && !is_null($rest->finish)){
+                        $sumRestSeconds += $rest->finish->diffInSeconds($rest->start);
+                    }
+                }else{
+                    if(!is_null($rest->correction_start) && !is_null($rest->correction_finish)){
+                        $sumRestSeconds += $rest->correction_finish->diffInSeconds($rest->correction_start);
+                    }
+                }
+            }
+            $restHours = floor($sumRestSeconds / 3600);
+            $restMinutes = sprintf('%02d', floor(($sumRestSeconds % 3600) / 60));
+            $rests[$work->id] = "{$restHours}:{$restMinutes}";
+            //休憩時間を差し引いたその日の労働時間を'0:00'形式で記憶
+            if(!$work->is_demand || $work->demand->status == '承認待ち'){
+                $attendanceTime = $work->getAttendanceTime();
+            }else{
+                $attendanceTime = $work->getAttendanceCorrectionTime();
+            }
+            if($attendanceTime != 0){
+                $totalAttendanceTime = $attendanceTime - $sumRestSeconds;
+                $totalAttendanceHours = floor($totalAttendanceTime / 3600);
+                $totalAttendanceMinutes = sprintf('%02d', floor(($totalAttendanceTime % 3600) / 60));
+                $resultAttendanceTime[$work->id] = "{$totalAttendanceHours}:{$totalAttendanceMinutes}";
+            }else{
+                $resultAttendanceTime[$work->id] = "0:00";
+            }
+            if(!is_null($work->start) && !is_null($work->finish)){
+                $data = [
+                    $work->work_day->format('m') . '月' . $work->work_day->format('d') . '日',
+                    $work->start->format('H:i'),
+                    $work->finish->format('H:i'),
+                    $rests[$work->id],
+                    $resultAttendanceTime[$work->id],
+                ];
+                array_push( $datas, $data);
+            }
+        }
+        $handle = fopen('php://temp', 'r+b');
+        foreach($datas as $temp){
+            fputcsv($handle, $temp);
+        }
+        rewind($handle);
+        $csv = stream_get_contents($handle);
+        fclose($handle);
+        $csv = str_replace( PHP_EOL, "\r\n", $csv );
+        $filename = $user->name . "_" . $year . '年' . $month . '月_勤怠記録.csv';
+        $headers = array(
+            'Content-Type' => 'text/csv',
+            'Content-Disposition' => 'attachment; filename='.$filename,
+        );
+        return Response::make($csv, 200, $headers);
     }
 }

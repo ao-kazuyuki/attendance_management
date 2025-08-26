@@ -53,6 +53,7 @@ Route::controller(AdminController::class)->group(function(){
         Route::get('/admin/stamp_correction_request/list', 'showCorrectionList')->name('admin-show-correction-list');
         Route::get('/stamp_correction_request/approve/{attendance_correct_request}', 'showApproval')->name('show-approval');
         Route::post('/admin/approval/{attendance_correct_request}', 'storeApproval')->name('admin-approval-request');
+        Route::post('/admin/export/csv/{user_id}/{year}/{month}', 'exportCsv')->name('admin-export-csv');
     });
 });
 
