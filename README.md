@@ -74,7 +74,21 @@
 <dl>
     <dt>テストファイル構成</dt>
     <dd>テストコードはスプレットシートのシート「テストケース一覧」のIDごとにテストファイルを生成し、tests/Featureフォルダ配下にあります。</dd>
-    <dd>ID: 1 会員登録機能　MemberRegistrationTest.php</dd>
+    <dd>ID: 1 認証機能（一般ユーザー）　CertificationTest.php</dd>
+    <dd>ID: 2 ログイン認証機能（一般ユーザー）　GeneralLoginTest.php</dd>
+    <dd>ID: 3 ログイン認証機能（管理者）　AdminLoginTest.php</dd>
+    <dd>ID: 4 日時取得機能　GetDateTest.php</dd>
+    <dd>ID: 5 ステータス確認機能　CheckStatusTest.php</dd>
+    <dd>ID: 6 出勤機能　AttendanceAtWorkTest.php</dd>
+    <dd>ID: 7 休憩機能　RestTest.php</dd>
+    <dd>ID: 8 退勤機能　LeavingWorkTest.php</dd>
+    <dd>ID: 9 勤怠一覧情報取得機能（一般ユーザー）　GetGeneralAttendanceListTest.php</dd>
+    <dd>ID:10 勤怠詳細情報取得機能（一般ユーザー）　GetGeneralAttendanceDetailTest.php</dd>
+    <dd>ID:11 勤怠詳細情報修正機能（一般ユーザー）　GeneralCorrectionAttendanceTest.php</dd>
+    <dd>ID:12 勤怠一覧情報取得機能（管理者）　GetAdminAttendanceListTest.php</dd>
+    <dd>ID:13 勤怠詳細情報取得・修正機能（管理者）　AdminCorrectionAttendanceTest.php</dd>
+    <dd>ID:14 ユーザー情報取得機能（管理者）　GetAdminUserInformationTest.php</dd>
+    <dd>ID:15 勤怠情報修正機能（管理者）　AdminApprovalTest.php</dd>
     <dd>※phpコンテナ内で vendor/bin/phpunit tests/Feature/xxxxx.phpのように各テストファイルを指定してテストを実行して下さい。</dd>
 </dl>
 
