@@ -20,6 +20,7 @@ class AttendanceController extends Controller
         $date = new DateTime();
         if(!$user->isWork($date)){
             $user->updateStatusByUserId('1');
+            $user->load('status');
         }
         //現在の日付と時刻、勤怠状況を出力
         $outputDate = $this->getCurrentDate($date);
@@ -55,28 +56,32 @@ class AttendanceController extends Controller
     public function start(){
         $user = Auth::user();
         $user->updateStatusByUserId('2');
-        $works = $user->setStartAttendance();
+        $user->load('status');
+        $work = $user->setStartAttendance();
         return redirect('/attendance')->with('message', '出勤しました！');
     }
 
     public function finish(){
         $user = Auth::user();
         $user->updateStatusByUserId('4');
-        $works = $user->setFinishAttendance();
+        $user->load('status');
+        $user->setFinishAttendance();
         return redirect('/attendance')->with('message', '退勤しました！');
     }
 
     public function restIn(){
         $user = Auth::user();
         $user->updateStatusByUserId('3');
-        $rest = $user->setStartRest();
+        $user->load('status');
+        $user->setStartRest();
         return redirect('/attendance')->with('message', '休憩入りしました！');
     }
 
     public function restOut(){
         $user = Auth::user();
         $user->updateStatusByUserId('2');
-        $rest = $user->setFinishRest();
+        $user->load('status');
+        $user->setFinishRest();
         return redirect('/attendance')->with('message', '休憩を終えました！');
     }
 
