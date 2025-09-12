@@ -73,6 +73,11 @@ class CorrectionRequest extends FormRequest
 
     public function messages(){
         return[
+            'start-work.before' => '出勤時間もしくは退勤時間が不適切な値です',
+            'finish-work.after' => '出勤時間もしくは退勤時間が不適切な値です',
+            'start-rest.*.before' => '休憩時間が不適切な値です',
+            'start-rest.*.after' => '休憩時間が不適切な値です',
+            'finish-rest.*.before' => '休憩時間が不適切な値です',
             'remarks.required' => '備考を入力してください',
             'remarks.max' => '備考は255文字以内で入力してください',
         ];
