@@ -118,7 +118,7 @@ class GeneralCorrectionAttendanceTest extends TestCase
             'remarks' => '入力する時間を誤った為',
         ]);
         //休憩時間に対するバリデーションエラーを確認する。
-        for($i=0; $i<count($startRests); $i++){
+        for($i=0; $i<count($finishRests); $i++){
             $response->assertSessionHasErrors(['finish-rest.' . $i => '休憩時間が不適切な値です']);
         }
     }
@@ -154,10 +154,8 @@ class GeneralCorrectionAttendanceTest extends TestCase
             'add-finish-rest' => '',
             'remarks' => '',
         ]);
-        //休憩時間に対するバリデーションエラーを確認する。
-        for($i=0; $i<count($startRests); $i++){
-            $response->assertSessionHasErrors(['remarks' => '備考を入力してください']);
-        }
+        //備考に対するバリデーションエラーを確認する。
+        $response->assertSessionHasErrors(['remarks' => '備考を入力してください']);
     }
 
     /**
