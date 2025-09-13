@@ -8,52 +8,52 @@ use Illuminate\Support\Facades\Route;
 
 Route::controller(AuthController::class)->group(function(){
     Route::middleware('guest')->group(function(){
-        Route::get('/register', 'register')->name('register');
-        Route::post('/register', 'store');
-        Route::get('/login', 'showLogin')->name('login');
-        Route::post('/login', 'login');
+        Route::get('/register', 'register')->name('register');                                                                  //ユーザー登録画面表示
+        Route::post('/register', 'store');                                                                                      //ユーザー登録処理
+        Route::get('/login', 'showLogin')->name('login');                                                                       //ログイン画面表示
+        Route::post('/login', 'login');                                                                                         //ログイン処理
     });
     Route::middleware('auth')->group(function(){
-        Route::post('/logout', 'logout')->name('logout');
+        Route::post('/logout', 'logout')->name('logout');                                                                       //ログアウト処理
     });
 });
 
 Route::controller(AttendanceController::class)->group(function(){
     Route::middleware(['auth', 'verified'])->group(function(){
-        Route::get('/attendance', 'index')->name('show-attendance');                                                //勤怠登録画面
-        Route::post('/attendance/start', 'start')->name('start');                                                   //出勤処理
-        Route::post('/attendance/finish', 'finish')->name('finish');                                                //退勤処理
-        Route::post('/attendance/rest-in', 'restIn')->name('rest-in');                                              //休憩(入)処理
-        Route::post('/attendance/rest-out', 'restOut')->name('rest-out');                                           //休憩(戻)処理
-        Route::get('/attendance/current-time', 'getCurrentDateTime')->name('current-time');                         //非同期に時間を取得
-        Route::get('/attendance/list', 'showAttendanceList')->name('show-attendance-list');
-        Route::get('/attendance/list/{year}/{month}', 'selectAttendanceList')->name('select-attendance-list');
-        Route::get('/attendance/{id}', 'showDetailAttendance')->name('show-detail-attendance');
-        Route::post('/attendance/{id}', 'storeCorrection')->name('correction-request');
-        Route::get('/general/stamp_correction_request/list', 'showCorrectionList')->name('general-show-correction-list');
+        Route::get('/attendance', 'index')->name('show-attendance');                                                            //勤怠登録画面表示
+        Route::post('/attendance/start', 'start')->name('start');                                                               //出勤処理
+        Route::post('/attendance/finish', 'finish')->name('finish');                                                            //退勤処理
+        Route::post('/attendance/rest-in', 'restIn')->name('rest-in');                                                          //休憩(入)処理
+        Route::post('/attendance/rest-out', 'restOut')->name('rest-out');                                                       //休憩(戻)処理
+        Route::get('/attendance/current-time', 'getCurrentDateTime')->name('current-time');                                     //非同期に時間を取得
+        Route::get('/attendance/list', 'showAttendanceList')->name('show-attendance-list');                                     //勤怠一覧画面表示
+        Route::get('/attendance/list/{year}/{month}', 'selectAttendanceList')->name('select-attendance-list');                  //指定年月の勤怠一覧画面表示
+        Route::get('/attendance/{id}', 'showDetailAttendance')->name('show-detail-attendance');                                 //勤怠詳細画面表示
+        Route::post('/attendance/{id}', 'storeCorrection')->name('correction-request');                                         //勤怠修正依頼
+        Route::get('/general/stamp_correction_request/list', 'showCorrectionList')->name('general-show-correction-list');       //申請一覧画面表示
     });
 });
 
 Route::controller(AdminController::class)->group(function(){
     Route::middleware('guest')->group(function(){
-        Route::get('/admin/login', 'showLogin')->name('admin-login');
-        Route::post('/admin/login', 'login');
+        Route::get('/admin/login', 'showLogin')->name('admin-login');                                                                   //管理者ログイン画面表示
+        Route::post('/admin/login', 'login');                                                                                           //管理者ログイン処理
     });
     Route::middleware('auth')->group(function(){
-        Route::post('/admin/logout', 'logout')->name('admin-logout');
+        Route::post('/admin/logout', 'logout')->name('admin-logout');                                                                   //管理者ログアウト処理
     });
     Route::middleware(['is_admin'])->group(function(){
-        Route::get('/admin/attendance/list', 'showAttendanceList')->name('admin-show-attendance-list');
-        Route::get('/admin/attendance/list/{year}/{month}/{day}', 'selectAttendanceList')->name('admin-select-attendance-list');
-        Route::get('/admin/attendance/{id}', 'showDetailAttendance')->name('admin-show-detail-attendance');
-        Route::post('/admin/attendance/{id}', 'storeCorrection')->name('admin-correction-request');
-        Route::get('/admin/staff/list', 'showStaffList')->name('show-staff-list');
-        Route::get('/admin/attendance/staff/{id}', 'showStaffAttendanceList')->name('show-staff-attendance-list');
-        Route::get('/admin/attendance/staff/{id}/{year}/{month}', 'selectStaffAttendanceList')->name('select-staff-attendance-list');
-        Route::get('/admin/stamp_correction_request/list', 'showCorrectionList')->name('admin-show-correction-list');
-        Route::get('/stamp_correction_request/approve/{attendance_correct_request}', 'showApproval')->name('show-approval');
-        Route::post('/admin/approval/{attendance_correct_request}', 'storeApproval')->name('admin-approval-request');
-        Route::post('/admin/export/csv/{user_id}/{year}/{month}', 'exportCsv')->name('admin-export-csv');
+        Route::get('/admin/attendance/list', 'showAttendanceList')->name('admin-show-attendance-list');                                 //管理者で勤怠一覧画面を表示
+        Route::get('/admin/attendance/list/{year}/{month}/{day}', 'selectAttendanceList')->name('admin-select-attendance-list');        //管理者で指定した年月日の勤怠一覧画面を表示
+        Route::get('/admin/attendance/{id}', 'showDetailAttendance')->name('admin-show-detail-attendance');                             //管理者で勤怠詳細画面を表示
+        Route::post('/admin/attendance/{id}', 'storeCorrection')->name('admin-correction-request');                                     //管理者権限で勤怠の修正をかける処理
+        Route::get('/admin/staff/list', 'showStaffList')->name('show-staff-list');                                                      //スタッフ一覧画面を表示
+        Route::get('/admin/attendance/staff/{id}', 'showStaffAttendanceList')->name('show-staff-attendance-list');                      //スタッフ別勤怠一覧画面を表示
+        Route::get('/admin/attendance/staff/{id}/{year}/{month}', 'selectStaffAttendanceList')->name('select-staff-attendance-list');   //指定した年月のスタッフ別勤怠一覧画面を表示
+        Route::get('/admin/stamp_correction_request/list', 'showCorrectionList')->name('admin-show-correction-list');                   //管理者で申請一覧画面を表示
+        Route::get('/stamp_correction_request/approve/{attendance_correct_request}', 'showApproval')->name('show-approval');            //管理者で修正申請承認画面を表示
+        Route::post('/admin/approval/{attendance_correct_request}', 'storeApproval')->name('admin-approval-request');                   //修正申請を管理者が承認する処理
+        Route::post('/admin/export/csv/{user_id}/{year}/{month}', 'exportCsv')->name('admin-export-csv');                               //勤怠情報をCSV出力する処理
     });
 });
 
