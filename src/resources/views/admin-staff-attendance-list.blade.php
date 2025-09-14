@@ -89,7 +89,15 @@
                 echo "<td>" . $dayOfFinishAttendance . "</td>";
                 echo "<td>" . $dayOfSumRestTime . "</td>";
                 echo "<td>" . $dayOfResultAttendanceTime . "</td>";
-                echo "<td>" . '<a class="detail-link" href="' . route('admin-show-detail-attendance', ['id' => $work->id ?? 0]) . '">詳細</a></td></tr>';
+                if(isset($work)){
+                    if(!is_null($work->start) && !is_null($work->finish)){
+                        echo "<td>" . '<a class="detail-link" href="' . route('admin-show-detail-attendance', ['id' => $work->id ?? 0]) . '">詳細</a></td></tr>';
+                    }else{
+                        echo "<td></td></tr>";                        
+                    }
+                }else{
+                    echo "<td></td></tr>";
+                }
                 $weekdayNum++;
                 if($weekdayNum > 6){
                     $weekdayNum = 0;

@@ -3,28 +3,6 @@ body {
     background-color: #f0eff2;
 }
 
-.flash-layout {
-    min-height: 50px;
-}
-
-#flashLayout {
-    opacity: 1;
-    visibility: visible;
-    transition: opacity 1s ease-in-out 3s, visibility 0s linear 4s;
-}
-
-#flashLayout.hide {
-    opacity: 0;
-    visibility: hidden;
-}
-
-.flash-msg {
-    font-size: 20px;
-    font-weight: bold;
-    color: #000000;
-    padding: 10px 20px;
-}
-
 .attendance-layout {
     display: flex;
     flex-direction: column;

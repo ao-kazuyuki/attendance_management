@@ -11,12 +11,6 @@
 
 @section('content')
 
-<div class="flash-layout" id="flashLayout">
-@if(session('message'))
-    <div class="flash-msg" id="flashMsg">{{ session('message') }}</div>
-@endif
-</div>
-
 <div class="attendance-layout">
     <div class="attendance-state">{{ $user->getStatus() }}</div>
     <div class="attendance-day" id="date">{{ $outputDate }}</div>
@@ -49,13 +43,6 @@
 
 <!-- 現在時刻を非同期に取得 -->
 <script>
-    if(document.getElementById('flashMsg')){
-        window.addEventListener('load', () => {
-            const flashElm = document.getElementById('flashLayout');
-            flashElm.style.backgroundColor = "#00cc00";
-            flashElm.classList.add('hide');
-        });
-    }
     const dateElm = document.getElementById('date');
     const timeElm = document.getElementById('time');
     const updateTime = async function(){
